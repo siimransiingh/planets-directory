@@ -32,8 +32,14 @@ function App() {
       }
     }
   };
-  const handleRestart = () => {
-    setPage(1); 
+
+  const handleRestart = async () => {
+    setPage(1);
+    const data = await fetchPlanets();
+    if (data) {
+      setPlanets(data.results);
+      setNextPage(data.next);
+    }
   };
   
   const startIndex = (page - 1) * cardsPerPage;
@@ -42,22 +48,21 @@ function App() {
 
   return (
     <div className="app-container">
-    <div className="content">
-      <SolarSystemBackground />
-      <h1 className='anta-regular'>Star Wars Planets Directory</h1>
-      <div className="planet-container">
-        {visiblePlanets.map(planet => (
-          <PlanetCard key={planet.url} planet={planet} />
-        ))}
+      <div className="content">
+        <SolarSystemBackground />
+        <h1 className='anta-regular'>Star Wars Planets Directory</h1>
+        <div className="planet-container">
+          {visiblePlanets.map(planet => (
+            <PlanetCard key={planet.url} planet={planet} />
+          ))}
+        </div>
+        {nextPage ? (
+          <button className='load-button' onClick={handleNextPage}>Load More</button>
+        ) : (
+          <button className='load-button' onClick={handleRestart}>Restart</button>
+        )}
       </div>
-      {nextPage ? (
-        <button className='load-button' onClick={handleNextPage}>Load More</button>
-      ) : (
-        <button className='load-button' onClick={handleRestart}>Restart</button>
-      )}
     </div>
-  </div>
-);
+  );
 }
-
 export default App;
